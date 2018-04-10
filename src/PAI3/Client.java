@@ -7,13 +7,19 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 public class Client {
 
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		System.setProperty("javax.net.ssl.trustStore", "cert.store");
-		Socket socket = ((SSLSocketFactory) SSLSocketFactory.getDefault()).createSocket("localhost", 4444);
+		SSLSocket socket = (SSLSocket) SSLSocketFactory.getDefault().createSocket("localhost", 4444);
+		String[] cipherSuites = {"TLS_RSA_WITH_AES_128_CBC_SHA", 
+				"TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
+				"TLS_DHE_DSS_WITH_AES_128_CBC_SHA",
+				"SSL_RSA_WITH_3DES_EDE_CBC_SHA"};
+		socket.setEnabledCipherSuites(cipherSuites);
 		//Recibir lo que venga del servidor
 		BufferedReader socketbufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		//Mensajero que lleva mensajes al servidor
